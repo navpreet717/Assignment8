@@ -7,13 +7,15 @@ public class NonsenseCoin {
 		
 		addBlock(new Block("first block", "0"));
 		addBlock(new Block("second block",blockchain.get(blockchain.size()-1).hash));
-		addBlock(new Block("third block",blockchain.get(blockchain.size()-1).hash));	
+		addBlock(new Block("third block",blockchain.get(blockchain.size()-1).hash));
+		updateBlock(new Block("updated block",blockchain.get(blockchain.size()-2).hash), 2);
 		
-		System.out.println("\nBlockchain is Valid: " + isChainValid());
+		
 		
 		String blockchainJson = StringHash.getJson(blockchain);
 		System.out.println("\nThe block chain: ");
 		System.out.println(blockchainJson);
+		//System.out.println("\nBlockchain is Valid: " + isChainValid());
 	}
 	//Check If BlockChain is Valid Or Not
 	public static Boolean isChainValid() {
@@ -48,5 +50,16 @@ public class NonsenseCoin {
 	public static void addBlock(Block newBlock) {
 		newBlock.mineBlock(difficulty);
 		blockchain.add(newBlock);
+	}
+	public static void updateBlock(Block newBlock,int index) {
+		//newBlock.mineBlock(difficulty);
+		String updatePrevioushash = blockchain.get(index -1).hash;
+		blockchain.remove(index - 1);
+		blockchain.add(index - 1,newBlock);
+		blockchain.get(index - 1).hash = updatePrevioushash;
+		blockchain.get(index - 1).previousHash = blockchain.get(index - 2).hash;
+		blockchain.get(index).previousHash = blockchain.get(index - 1).hash;
+		blockchain.get(index).calculateHash();
+		
 	}
 }
